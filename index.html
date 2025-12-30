@@ -46,22 +46,96 @@
             font-family: 'Cinzel Decorative', cursive;
             font-size: clamp(4rem, 15vw, 12rem);
             font-weight: 700;
+            letter-spacing: 0.05em;
+            display: flex;
+            gap: 0.02em;
+            filter: drop-shadow(0 0 50px rgba(255, 100, 200, 0.6));
+        }
+        
+        .year span {
+            display: inline-block;
             background: linear-gradient(
-                135deg,
-                #ffd700 0%,
-                #ffec8b 25%,
-                #ffd700 50%,
-                #daa520 75%,
-                #ffd700 100%
+                180deg,
+                var(--c1) 0%,
+                var(--c2) 50%,
+                var(--c3) 100%
             );
-            background-size: 200% 200%;
+            background-size: 100% 300%;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            animation: shimmer 3s ease-in-out infinite;
-            text-shadow: 0 0 80px rgba(255, 215, 0, 0.5);
-            filter: drop-shadow(0 0 30px rgba(255, 215, 0, 0.4));
-            letter-spacing: 0.1em;
+            animation: 
+                colorShift 3s ease-in-out infinite,
+                glow 2s ease-in-out infinite,
+                float 3s ease-in-out infinite;
+            position: relative;
+        }
+        
+        .year span::before {
+            content: attr(data-char);
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: linear-gradient(
+                180deg,
+                var(--c1) 0%,
+                var(--c2) 50%,
+                var(--c3) 100%
+            );
+            background-size: 100% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: blur(8px);
+            opacity: 0.7;
+            animation: colorShift 3s ease-in-out infinite;
+            animation-delay: inherit;
+        }
+        
+        .year span:nth-child(1) {
+            --c1: #ff6b6b;
+            --c2: #ffd93d;
+            --c3: #ff6b6b;
+            animation-delay: 0s, 0s, 0s;
+        }
+        .year span:nth-child(2) {
+            --c1: #4ecdc4;
+            --c2: #44a3ff;
+            --c3: #a855f7;
+            animation-delay: 0.15s, 0.2s, 0.3s;
+        }
+        .year span:nth-child(3) {
+            --c1: #f472b6;
+            --c2: #c084fc;
+            --c3: #60a5fa;
+            animation-delay: 0.3s, 0.4s, 0.6s;
+        }
+        .year span:nth-child(4) {
+            --c1: #fbbf24;
+            --c2: #34d399;
+            --c3: #22d3ee;
+            animation-delay: 0.45s, 0.6s, 0.9s;
+        }
+        
+        @keyframes colorShift {
+            0%, 100% { background-position: 0% 0%; }
+            50% { background-position: 0% 100%; }
+        }
+        
+        @keyframes glow {
+            0%, 100% { 
+                filter: drop-shadow(0 0 20px var(--c1)) drop-shadow(0 0 40px var(--c2));
+                transform: scale(1);
+            }
+            50% { 
+                filter: drop-shadow(0 0 35px var(--c2)) drop-shadow(0 0 60px var(--c3));
+                transform: scale(1.02);
+            }
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
         }
         
         .greeting {
@@ -83,11 +157,6 @@
             opacity: 0;
             animation: fadeInUp 1.5s ease-out 1s forwards;
             letter-spacing: 0.2em;
-        }
-        
-        @keyframes shimmer {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
         }
         
         @keyframes fadeInUp {
@@ -173,7 +242,12 @@
     <div class="stars" id="stars"></div>
     <canvas id="fireworks"></canvas>
     <div class="overlay">
-        <div class="year">2026</div>
+        <div class="year">
+            <span data-char="2">2</span>
+            <span data-char="0">0</span>
+            <span data-char="2">2</span>
+            <span data-char="6">6</span>
+        </div>
         <div class="greeting">新年快乐</div>
         <div class="subtitle">愿新的一年 繁花似锦 前程似锦</div>
     </div>
