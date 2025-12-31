@@ -179,6 +179,23 @@
             0%, 100% { opacity: 0.5; }
             50% { opacity: 1; }
         }
+
+        /* 全屏提示 */
+        .fullscreen-hint {
+            position: fixed;
+            bottom: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.75rem;
+            z-index: 3;
+            animation: fadeHint 3s ease-in-out infinite;
+            letter-spacing: 0.1em;
+        }
+        @keyframes fadeHint {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+        }
         
         /* Shooting stars */
         .shooting-star {
@@ -219,7 +236,42 @@
         <div class="subtitle">愿新的一年 繁花似锦 前程似锦</div>
     </div>
     <div class="click-hint">✨ 点击屏幕放烟花 ✨</div>
+    <div id="fullscreen-hint" class="fullscreen-hint">点击任意位置进入全屏</div>
     
+    <script>
+        // 点击页面进入全屏（只触发一次）
+        var hasEnteredFullscreen = false;
+
+        function enterFullscreen() {
+            if (hasEnteredFullscreen) return;
+            
+            var elem = document.documentElement;
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen();
+            } else if (elem.webkitRequestFullscreen) {
+                elem.webkitRequestFullscreen();
+            } else if (elem.msRequestFullscreen) {
+                elem.msRequestFullscreen();
+            }
+            hasEnteredFullscreen = true;
+            
+            var hint = document.getElementById('fullscreen-hint');
+            if (hint) hint.style.display = 'none';
+        }
+
+        document.addEventListener('click', function() {
+            enterFullscreen();
+        });
+
+        document.addEventListener('fullscreenchange', function() {
+            if (!document.fullscreenElement) {
+                hasEnteredFullscreen = false;
+                var hint = document.getElementById('fullscreen-hint');
+                if (hint) hint.style.display = 'block';
+            }
+        });
+    </script>
+
     <script>
         // Create stars
         const starsContainer = document.getElementById('stars');
