@@ -487,8 +487,8 @@
             fireworks.push(new Firework(x, startY, y));
         }
         
-        // Auto launch fireworks
-        setInterval(createRandomFirework, 800);
+        // Auto launch fireworks (after opening show)
+        let autoLaunchInterval;
         
         // Click to create fireworks
         canvas.addEventListener('click', (e) => {
@@ -528,12 +528,80 @@
             requestAnimationFrame(animate);
         }
         
-        // Initial fireworks burst
-        setTimeout(() => {
-            for (let i = 0; i < 5; i++) {
-                setTimeout(createRandomFirework, i * 300);
+        // ========== 开场大烟花效果 (5秒) ==========
+        function grandOpeningShow() {
+            const duration = 5000; // 5秒
+            const startTime = Date.now();
+            
+            // 第一波：中央大爆发
+            for (let i = 0; i < 8; i++) {
+                setTimeout(() => {
+                    const x = canvas.width * 0.3 + Math.random() * canvas.width * 0.4;
+                    createFireworkAt(x, canvas.height * 0.25 + Math.random() * canvas.height * 0.15);
+                }, i * 80);
             }
-        }, 500);
+            
+            // 持续密集发射
+            const openingInterval = setInterval(() => {
+                const elapsed = Date.now() - startTime;
+                
+                if (elapsed >= duration) {
+                    clearInterval(openingInterval);
+                    // 开场结束后，启动常规自动发射
+                    autoLaunchInterval = setInterval(createRandomFirework, 800);
+                    return;
+                }
+                
+                // 根据时间调整发射模式
+                const progress = elapsed / duration;
+                
+                if (progress < 0.3) {
+                    // 前30%：密集中央爆发
+                    for (let i = 0; i < 3; i++) {
+                        setTimeout(() => {
+                            const x = canvas.width * 0.2 + Math.random() * canvas.width * 0.6;
+                            const y = canvas.height * 0.15 + Math.random() * canvas.height * 0.25;
+                            createFireworkAt(x, y);
+                        }, i * 50);
+                    }
+                } else if (progress < 0.6) {
+                    // 中间30%：左右交替
+                    const side = Math.random() > 0.5;
+                    for (let i = 0; i < 2; i++) {
+                        setTimeout(() => {
+                            const x = side 
+                                ? canvas.width * 0.1 + Math.random() * canvas.width * 0.3
+                                : canvas.width * 0.6 + Math.random() * canvas.width * 0.3;
+                            const y = canvas.height * 0.2 + Math.random() * canvas.height * 0.2;
+                            createFireworkAt(x, y);
+                        }, i * 100);
+                    }
+                } else if (progress < 0.85) {
+                    // 后25%：全屏散射
+                    for (let i = 0; i < 4; i++) {
+                        setTimeout(() => {
+                            const x = Math.random() * canvas.width;
+                            const y = canvas.height * 0.1 + Math.random() * canvas.height * 0.35;
+                            createFireworkAt(x, y);
+                        }, i * 60);
+                    }
+                } else {
+                    // 最后15%：大结局密集爆发
+                    for (let i = 0; i < 5; i++) {
+                        setTimeout(() => {
+                            const x = canvas.width * 0.15 + Math.random() * canvas.width * 0.7;
+                            const y = canvas.height * 0.15 + Math.random() * canvas.height * 0.25;
+                            createFireworkAt(x, y);
+                        }, i * 40);
+                    }
+                }
+            }, 150);
+        }
+        
+        // 页面加载后启动开场烟花
+        setTimeout(() => {
+            grandOpeningShow();
+        }, 300);
         
         animate();
     </script>
